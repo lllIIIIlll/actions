@@ -1,0 +1,62 @@
+name: "lllIIIIlll Actions : Sonar Scan"
+description: "Uses Sonar to scan test coverage, code smells and security hotspots/"
+author: "lllIIIIlll"
+
+inputs:
+  java-version:
+    description: "Java SDK version"
+    required: false
+    default: "17"
+  java-distribution:
+    description: "Java SDK version"
+    required: false
+    default: "zulu"
+  nexus-user:
+    description: "Nexus user for authentication"
+    required: true
+  nexus-password:
+    description: "Nexus password for authentication"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    # Install prerequisites
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch_name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+      run: echo "branch_name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch_name
+
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      if: ${{ steps.extract_branch_name.branch_name=='main' }}
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v3
+      if: ${{ steps.extract_branch_name.branch_name=='main' }}
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Analyze with SonarCloud
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -P sonar -s ./settings.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          NEXUS_USER: ${{ inputs.nexus-user }}
+          NEXUS_PASSWORD: ${{ inputs.nexus-password }}
