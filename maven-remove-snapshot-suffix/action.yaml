@@ -1,0 +1,57 @@
+name: "lllIIIIlll Actions : Remove SNAPSHOT Suffix"
+description: "Remove SNAPSHOT suffix for all modules in a maven modules"
+author: "lllIIIIlll"
+
+inputs:
+  java-version:
+    description: "Java SDK version"
+    required: false
+    default: "17"
+  java-distribution:
+    description: "Java SDK version"
+    required: false
+    default: "zulu"
+  nexus-user:
+    description: "Nexus user for authentication"
+    required: true
+  nexus-password:
+    description: "Nexus password for authentication"
+    required: true
+  includs-dependencies:
+    description: "Dependencies that needed to remove SNAPSHOT suffix"
+    required: false
+    default: ""
+
+runs:
+  using: composite
+
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Set up Nexus user as environment variable
+      shell: bash
+      run: echo "NEXUS_USERNAME=${{ inputs.nexus-user }}" >> $GITHUB_ENV
+
+    - name: Set up Nexus user as environment variable
+      shell: bash
+      run: echo "NEXUS_PASSWORD=${{ inputs.nexus-passowrd }}" >> $GITHUB_ENV
+    
+    - name: Remove SNAPSHOT suffix for all modules
+      shell: bash
+      run: mvn versions:set -DremoveSnapshot -s ./settings.xml
+
+    - name: Remove SNAHPSTHO suffix for depencies
+      if: "${{ inputs.includs-dependencies != ''}}"
+      shell: bash
+      run: mvn versions:update-properties -Dincludes=${{ inputs.includs-dependencies }} -s ./settings.xml
+
+    - name: Commit version
+      shell: bash
+      run: mvn versions:commit -s ./settings.xml
+
+    - name: Push the version update to current branch
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "[OPS] Remove SNAPSHOT suffix for all modules and depencies"
