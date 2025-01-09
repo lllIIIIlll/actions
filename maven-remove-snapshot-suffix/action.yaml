@@ -1,5 +1,5 @@
 name: "lllIIIIlll Actions : Remove SNAPSHOT Suffix"
-description: "Remove SNAPSHOT suffix for all modules in a maven modules"
+description: "Remove SNAPSHOT suffix for all modules in a maven project"
 author: "lllIIIIlll"
 
 inputs:
@@ -43,7 +43,7 @@ runs:
       run: mvn versions:set -DremoveSnapshot -s ./settings.xml
 
     - name: Remove SNAHPSTHO suffix for depencies
-      if: "${{ inputs.includs-dependencies != ''}}"
+      if: "${{ inputs.includes-dependencies != ''}}"
       shell: bash
       run: mvn versions:update-properties -Dincludes=${{ inputs.includes-dependencies }} -s ./settings.xml
 
