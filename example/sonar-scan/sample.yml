@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: "Analyze with SonarCloud"
-        uses: lllIIIIlll/actions/sonar-scan@sonar-scan
+        uses: lllIIIIlll/actions/sonar-scan@main
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           nexus-user: ${{ secrets.NEXUS_USERNAME }}

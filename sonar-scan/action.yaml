@@ -1,5 +1,5 @@
 name: "lllIIIIlll Actions : Sonar Scan"
-description: "Uses Sonar to scan test coverage, code smells and security hotspots/"
+description: "Uses Sonar to scan test coverage, code smells and security hotspots"
 author: "lllIIIIlll"
 
 inputs:
