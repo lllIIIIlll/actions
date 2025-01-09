@@ -17,7 +17,7 @@ inputs:
   nexus-password:
     description: "Nexus password for authentication"
     required: true
-  includs-dependencies:
+  includes-dependencies:
     description: "Dependencies that needed to remove SNAPSHOT suffix"
     required: false
     default: ""
@@ -45,7 +45,7 @@ runs:
     - name: Remove SNAHPSTHO suffix for depencies
       if: "${{ inputs.includs-dependencies != ''}}"
       shell: bash
-      run: mvn versions:update-properties -Dincludes=${{ inputs.includs-dependencies }} -s ./settings.xml
+      run: mvn versions:update-properties -Dincludes=${{ inputs.includes-dependencies }} -s ./settings.xml
 
     - name: Commit version
       shell: bash

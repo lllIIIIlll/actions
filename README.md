@@ -47,3 +47,33 @@ See [example usage](./examples/sonar-scan/sample.yml) for a full workflow exampl
 </details>
 
 ---
+
+## `maven-remove-snapshot-suffix` (on pull request)
+
+<details>
+  <summary>Expand</summary>
+
+### What does it do?
+
+This Action automates the removing SNAPSHOT suffix action when creating a release PR.
+
+### Inputs and their defaults
+
+| Name | Description | Mandatory? | Default |
+| --- | --- | --- | --- |
+| `nexus-user` | Nexus user for authentication | yes | |
+| `nexus-password` | Nexus password for authentication | yes | |
+| `includes-dependencies` | Dependencies that needed to remove SNAPSHOT suffix | false | "" |
+| `java-version` | Java SDK version | no | 17 |
+| `java-distribution` | Java SDK distribution | no | zulu |
+
+### Things to note
+
+- Need to have `content:write` permission for this workflow
+- The value of `includes-dependencies` need to be in the format `groupId.artifactId`.  By default, this action does not remove the SNAPSHOT suffix for any dependencies
+
+### Sample usage
+
+See [example usage](./examples/maven-remove-snapshot-suffix/sample.yml) for a full workflow example.
+
+</details>
