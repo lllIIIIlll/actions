@@ -47,14 +47,8 @@ runs:
       shell: bash
       run: echo "NEXUS_PASSWORD=${{ inputs.nexus-passowrd }}" >> $GITHUB_ENV
 
-    - name: Extract branch name
-      shell: bash
-      run: echo "branch_name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      id: extract_branch_name
-
     - name: Cache Maven packages
       uses: actions/cache@v3
-      if: ${{ steps.extract_branch_name.branch_name=='main' }}
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -62,7 +56,6 @@ runs:
 
     - name: Cache SonarCloud packages
       uses: actions/cache@v3
-      if: ${{ steps.extract_branch_name.branch_name=='main' }}
       with:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
